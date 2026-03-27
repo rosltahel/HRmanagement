@@ -1,8 +1,8 @@
 # 🚀 AI-Powered HR Management Platform
 
-A full-stack, AI-driven HR platform designed to help companies manage
-employees, track skills, and make smarter workforce decisions using
-intelligent recommendations.
+A full-stack, AI-driven HR platform designed to empower companies by providing a dedicated space where employees can track their skills, grow professionally, and continuously develop within the organization. 
+
+Because employees are the true foundation of any successful company, this platform focuses on supporting their learning journey, visualizing their progress, and helping them reach their full potential—while enabling organizations to make smarter, data-driven workforce decisions through intelligent recommendations.
 
 ------------------------------------------------------------------------
 
