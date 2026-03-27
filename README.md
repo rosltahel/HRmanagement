@@ -190,7 +190,7 @@ OPENAI_API_KEY=your_openai_key_here
 
 ## 👩‍💻 Author
 
-**Rosol Tahel**\
+**Rosl Tahel**\
 - Software Engineer & AI Engineer\
 - Passionate about building impactful AI-driven products
 
