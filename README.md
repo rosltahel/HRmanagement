@@ -25,12 +25,15 @@ for easy deployment**.
 ## 🧠 Key Features
 
 ### 👑 Admin Dashboard
+<img width="1748" height="819" alt="image" src="https://github.com/user-attachments/assets/e501dea1-5585-41e9-9429-54db022d875f" />
 
 -   View and manage company registrations\
 -   Approve or reject companies\
 -   Monitor system activity
 
 ### 🏢 HR Dashboard
+<img width="1879" height="874" alt="image" src="https://github.com/user-attachments/assets/2ae4fe88-5c24-4efa-a323-0055b421f5b6" />
+<img width="1233" height="581" alt="image" src="https://github.com/user-attachments/assets/986c8637-450a-4ef5-8a21-ca67b1c4e52d" />
 
 -   Create and manage organizational hierarchy\
 -   Add / update / delete employees\
@@ -40,6 +43,7 @@ for easy deployment**.
 -   Receive AI insights based on company goals
 
 ### 👤 Employee Dashboard
+<img width="1893" height="872" alt="image" src="https://github.com/user-attachments/assets/d708ae09-98bc-435f-b3bc-2f4aa37e8eb4" />
 
 -   View personal skill progress\
 -   Follow learning paths\
