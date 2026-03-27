@@ -159,9 +159,10 @@ OPENAI_API_KEY=your_openai_key_here
 
 📄 Full report:\
 [Database Design Report](./docs/HR_Database_Report.pdf)
+<img width="708" height="686" alt="erd" src="https://github.com/user-attachments/assets/93df8425-5152-4c29-95e4-93a1f4b00315" />
 
 
-  (./docs/erd.png)
+ 
 
 ------------------------------------------------------------------------
 
