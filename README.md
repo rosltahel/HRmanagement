@@ -114,6 +114,7 @@ Update values inside `.env`: - Add your OpenAI API key\
 ### 3. Run the app
 
 ``` bash
+docker compose exec backend python create_admin.py
 docker compose up --build
 ```
 
