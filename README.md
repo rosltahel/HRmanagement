@@ -10,7 +10,7 @@ Because employees are the true foundation of any successful company, this platfo
 
 This platform allows companies to:
 
--   Manage employees, roles, and departments\
+-   Manage employees and roles
 -   Build organizational hierarchies\
 -   Track employee skills and learning progress\
 -   Receive AI-powered recommendations for workforce development\
@@ -37,7 +37,7 @@ for easy deployment**.
 
 -   Create and manage organizational hierarchy\
 -   Add / update / delete employees\
--   Assign roles and departments\
+-   Assign roles
 -   Track employee skill progress ⭐\
 -   Upload hierarchy via PDF (AI parsing)\
 -   Receive AI insights based on company goals
@@ -48,6 +48,7 @@ for easy deployment**.
 -   View personal skill progress\
 -   Follow learning paths\
 -   Interactive UI (3D skill visualization 🌌)
+-   Explore other employees’ achievements and progress
 
 ------------------------------------------------------------------------
 
@@ -192,7 +193,7 @@ OPENAI_API_KEY=your_openai_key_here
 
 **Rosl Tahel**\
 - Software Engineer & AI Engineer\
-- Passionate about building impactful AI-driven products
+- Passionate about building impactful Software products
 
 GitHub: https://github.com/rosltahel
 
