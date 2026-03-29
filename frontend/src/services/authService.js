@@ -17,4 +17,4 @@ API.interceptors.request.use((config) => {
 export const setPassword = (data) => API.post("/set-password", data);
 export const loginUser = (data) => API.post("/login", data);
 export const registerUser = (data) => API.post("/register", data);
-export const forgotPassword = (data) => API.post("/forgot-password", data); // ✅ fixed
+export const forgotPassword = (data) => API.post("/forgot-password", data); // 

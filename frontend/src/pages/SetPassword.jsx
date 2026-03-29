@@ -9,27 +9,27 @@ export default function SetPassword() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-const token = searchParams.get("token"); // grab token
+  const token = searchParams.get("token"); // grab token
 
-  const email = searchParams.get("email"); // ✅ not token
+  const email = searchParams.get("email"); //  not token
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await setPassword({
-  email,
-  token,         // send the token
-  password: newPassword,
-});
+    try {
+      const res = await setPassword({
+        email,
+        token,         // send the token
+        password: newPassword,
+      });
 
-    setMessage(res.data.message);
+      setMessage(res.data.message);
 
-    setTimeout(() => navigate("/"), 2000);
-  } catch (err) {
-    setError(err.response?.data?.detail || "Something went wrong");
-  }
-};
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err) {
+      setError(err.response?.data?.detail || "Something went wrong");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4">

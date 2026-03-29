@@ -5,7 +5,7 @@ export default function HRLayout() {
 
   return (
     <div className="flex min-h-screen bg-slate-900 text-white">
-      
+
       {/* Sidebar */}
       <div className="w-64 bg-slate-800 border-r border-slate-700 p-6">
         <h1 className="text-2xl font-bold mb-8">

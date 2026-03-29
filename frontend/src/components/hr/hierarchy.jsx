@@ -95,9 +95,8 @@ function RoleNode({
       <div className="group flex items-center gap-1.5 rounded-lg px-1 py-1 hover:bg-slate-50 transition-colors">
         <button
           onClick={() => setExpanded((v) => !v)}
-          className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors ${
-            hasContent ? "" : "invisible pointer-events-none"
-          }`}
+          className={`w-5 h-5 flex-shrink-0 flex items-center justify-center rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors ${hasContent ? "" : "invisible pointer-events-none"
+            }`}
         >
           {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
         </button>
@@ -148,7 +147,7 @@ function RoleNode({
             icon={<Trash2 size={13} />}
           />
         </div>
-        
+
       </div>
 
       {expanded && hasContent && (
@@ -158,49 +157,49 @@ function RoleNode({
           )} mt-0.5 space-y-0.5`}
         >
           {employees.map((emp) => (
-  <div
-    key={emp.assignment_id || emp.employee_id || emp.id}
-    className="group/emp flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-purple-50 transition-colors"
-  >
-    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">
-      {emp.name?.[0]?.toUpperCase() || "E"}
-    </div>
+            <div
+              key={emp.assignment_id || emp.employee_id || emp.id}
+              className="group/emp flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-purple-50 transition-colors"
+            >
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">
+                {emp.name?.[0]?.toUpperCase() || "E"}
+              </div>
 
-    <span className="text-sm text-slate-700 font-medium flex-1 min-w-0 truncate">
-      {emp.name}
-      {emp.is_active === false && (
-        <span className="ml-1.5 text-[10px] font-normal text-amber-500">
-          (pending)
-        </span>
-      )}
-    </span>
+              <span className="text-sm text-slate-700 font-medium flex-1 min-w-0 truncate">
+                {emp.name}
+                {emp.is_active === false && (
+                  <span className="ml-1.5 text-[10px] font-normal text-amber-500">
+                    (pending)
+                  </span>
+                )}
+              </span>
 
-    {emp.title && (
-      <span className="text-[11px] text-slate-400 hidden sm:block truncate max-w-[120px]">
-        {emp.title}
-      </span>
-    )}
+              {emp.title && (
+                <span className="text-[11px] text-slate-400 hidden sm:block truncate max-w-[120px]">
+                  {emp.title}
+                </span>
+              )}
 
-    <div className="text-right mr-1">
-      <p className="text-sm text-slate-700 font-medium">
-        ⭐ {emp.completed_skills_count || 0}
-      </p>
-      <p className="text-[11px] text-slate-500">
-        {emp.in_progress_count || 0} in progress
-      </p>
-    </div>
+              <div className="text-right mr-1">
+                <p className="text-sm text-slate-700 font-medium">
+                  ⭐ {emp.completed_skills_count || 0}
+                </p>
+                <p className="text-[11px] text-slate-500">
+                  {emp.in_progress_count || 0} in progress
+                </p>
+              </div>
 
-    <button
-      onClick={() =>
-        onRemoveEmployee(role.id, emp.assignment_id || emp.id)
-      }
-      title="Remove from role"
-      className="w-5 h-5 flex items-center justify-center rounded-full opacity-0 group-hover/emp:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0"
-    >
-      <X size={11} />
-    </button>
-  </div>
-))}
+              <button
+                onClick={() =>
+                  onRemoveEmployee(role.id, emp.assignment_id || emp.id)
+                }
+                title="Remove from role"
+                className="w-5 h-5 flex items-center justify-center rounded-full opacity-0 group-hover/emp:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0"
+              >
+                <X size={11} />
+              </button>
+            </div>
+          ))}
 
           {children.map((child) => (
             <RoleNode
@@ -375,7 +374,7 @@ function SubRoleModal({ parentRole, onClose, onSave }) {
 function AssignModal({ role, employees, onClose, onAssign }) {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
 
   const assignedIds = new Set((role.employees || []).map((e) => e.employee_id));
   const available = employees.filter(
@@ -710,46 +709,46 @@ export default function Hierarchy() {
   const [assignModal, setAssignModal] = useState(null);
 
   const fetchData = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const [rolesRes, usersRes] = await Promise.all([
-      api.get("/hierarchy/roles"),
-      api.get("/users"),
-    ]);
+      const [rolesRes, usersRes] = await Promise.all([
+        api.get("/hierarchy/roles"),
+        api.get("/users"),
+      ]);
 
-    const users = usersRes.data || [];
-    const roles = rolesRes.data || [];
+      const users = usersRes.data || [];
+      const roles = rolesRes.data || [];
 
-    const usersMap = new Map(users.map((u) => [u.id, u]));
+      const usersMap = new Map(users.map((u) => [u.id, u]));
 
-    const mergedRoles = roles.map((role) => ({
-      ...role,
-      employees: (role.employees || []).map((emp) => {
-        const fullUser =
-          usersMap.get(emp.employee_id) ||
-          usersMap.get(emp.id);
+      const mergedRoles = roles.map((role) => ({
+        ...role,
+        employees: (role.employees || []).map((emp) => {
+          const fullUser =
+            usersMap.get(emp.employee_id) ||
+            usersMap.get(emp.id);
 
-        return {
-          ...emp,
-          completed_skills_count: fullUser?.completed_skills_count || 0,
-          in_progress_count: fullUser?.in_progress_count || 0,
-          department: fullUser?.department || emp.department,
-          email: fullUser?.email || emp.email,
-          is_active:
-            fullUser?.is_active !== undefined ? fullUser.is_active : emp.is_active,
-        };
-      }),
-    }));
+          return {
+            ...emp,
+            completed_skills_count: fullUser?.completed_skills_count || 0,
+            in_progress_count: fullUser?.in_progress_count || 0,
+            department: fullUser?.department || emp.department,
+            email: fullUser?.email || emp.email,
+            is_active:
+              fullUser?.is_active !== undefined ? fullUser.is_active : emp.is_active,
+          };
+        }),
+      }));
 
-    setRoles(mergedRoles);
-    setEmployees(users);
-  } catch (err) {
-    console.error("Failed to load hierarchy data:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+      setRoles(mergedRoles);
+      setEmployees(users);
+    } catch (err) {
+      console.error("Failed to load hierarchy data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -825,12 +824,12 @@ export default function Hierarchy() {
 
 
 
-             <button
-            onClick={() => setUploadModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-sm font-medium rounded-lg transition-all shadow-sm"
-          >
-            <Sparkles size={14} /> AI Import
-          </button>
+            <button
+              onClick={() => setUploadModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-sm font-medium rounded-lg transition-all shadow-sm"
+            >
+              <Sparkles size={14} /> AI Import
+            </button>
 
 
 
@@ -876,53 +875,53 @@ export default function Hierarchy() {
               </span>
             </div>
 
-           {loading ? (
-  <div className="flex items-center justify-center h-64">
-    <div className="text-center text-slate-400">
-      <div className="text-4xl mb-3 animate-pulse">🏢</div>
-      <p className="text-sm">Loading org chart…</p>
-    </div>
-  </div>
-) : roots.length === 0 ? (
-  <div className="flex flex-col items-center justify-center h-56 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400">
-    <Building2 size={36} className="mb-3 text-slate-300" />
-    <p className="text-base font-medium text-slate-500">No roles defined yet</p>
-    <p className="text-sm mt-1 mb-4 text-center">
-      Create roles manually or let AI read an org chart image for you
-    </p>
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center text-slate-400">
+                  <div className="text-4xl mb-3 animate-pulse">🏢</div>
+                  <p className="text-sm">Loading org chart…</p>
+                </div>
+              </div>
+            ) : roots.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-56 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400">
+                <Building2 size={36} className="mb-3 text-slate-300" />
+                <p className="text-base font-medium text-slate-500">No roles defined yet</p>
+                <p className="text-sm mt-1 mb-4 text-center">
+                  Create roles manually or let AI read an org chart image for you
+                </p>
 
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => setUploadModal(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-sm font-medium rounded-lg transition-all"
-      >
-        <Sparkles size={14} /> AI Import
-      </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setUploadModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-sm font-medium rounded-lg transition-all"
+                  >
+                    <Sparkles size={14} /> AI Import
+                  </button>
 
-      <button
-        onClick={() => setCreateModal(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors"
-      >
-        <Plus size={14} /> Create First Role
-      </button>
-    </div>
-  </div>
-) : (
-  <div className="space-y-0.5 max-w-3xl">
-    {roots.map((role) => (
-      <RoleNode
-        key={role.id}
-        role={role}
-        allRoles={roles}
-        depth={0}
-        onEdit={setEditModal}
-        onDelete={setDeleteModal}
-        onAssign={(type, r) => setAssignModal({ type, role: r })}
-        onRemoveEmployee={handleRemoveEmployee}
-      />
-    ))}
-  </div>
-)}
+                  <button
+                    onClick={() => setCreateModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    <Plus size={14} /> Create First Role
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-0.5 max-w-3xl">
+                {roots.map((role) => (
+                  <RoleNode
+                    key={role.id}
+                    role={role}
+                    allRoles={roles}
+                    depth={0}
+                    onEdit={setEditModal}
+                    onDelete={setDeleteModal}
+                    onAssign={(type, r) => setAssignModal({ type, role: r })}
+                    onRemoveEmployee={handleRemoveEmployee}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -976,7 +975,7 @@ export default function Hierarchy() {
         <UploadHierarchyModal onClose={() => setUploadModal(false)} onSuccess={fetchData} />
       )}
 
-      
+
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import axios from "axios";
 
+//Instead of calling the backend everywhere → i control everything from one place
 const API = axios.create({
   baseURL: "http://localhost:8001",
 });
 
-// Attach token automatically (for future protected routes)
+
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {

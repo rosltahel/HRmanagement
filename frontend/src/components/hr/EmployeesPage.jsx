@@ -17,34 +17,34 @@ export default function EmployeesPage() {
   const [notificationError, setNotificationError] = useState("");
 
   const [departments, setDepartments] = useState([]);
-const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState([]);
 
-const [editName, setEditName] = useState("");
-const [editEmail, setEditEmail] = useState("");
-const [editDepartmentId, setEditDepartmentId] = useState("");
-const [editRoleId, setEditRoleId] = useState("");
-const [savingEmployee, setSavingEmployee] = useState(false);
-const [employeeActionMessage, setEmployeeActionMessage] = useState("");
-const [employeeActionError, setEmployeeActionError] = useState("");
-  
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editDepartmentId, setEditDepartmentId] = useState("");
+  const [editRoleId, setEditRoleId] = useState("");
+  const [savingEmployee, setSavingEmployee] = useState(false);
+  const [employeeActionMessage, setEmployeeActionMessage] = useState("");
+  const [employeeActionError, setEmployeeActionError] = useState("");
+
   useEffect(() => {
-  fetchEmployees();
-  fetchMeta();
-}, []);
+    fetchEmployees();
+    fetchMeta();
+  }, []);
 
-const fetchMeta = async () => {
-  try {
-    const [departmentsRes, rolesRes] = await Promise.all([
-      api.get("/departments"),
-      api.get("/roles"),
-    ]);
+  const fetchMeta = async () => {
+    try {
+      const [departmentsRes, rolesRes] = await Promise.all([
+        api.get("/departments"),
+        api.get("/roles"),
+      ]);
 
-    setDepartments(departmentsRes.data || []);
-    setRoles(rolesRes.data || []);
-  } catch (err) {
-    console.error("Failed to load departments/roles", err);
-  }
-};
+      setDepartments(departmentsRes.data || []);
+      setRoles(rolesRes.data || []);
+    } catch (err) {
+      console.error("Failed to load departments/roles", err);
+    }
+  };
 
   const fetchEmployees = async () => {
     try {
@@ -59,13 +59,23 @@ const fetchMeta = async () => {
   };
 
   const filteredEmployees = useMemo(() => {
+    const text = search.toLowerCase().trim();
+
+    if (!text) return employees;
+
     return employees.filter((emp) => {
-      const text = search.toLowerCase();
+      const name = emp.name?.toLowerCase() || "";
+      const email = emp.email?.toLowerCase() || "";
+      const department = (emp.department || "No department").toLowerCase();
+      const title = (emp.title || "No role").toLowerCase();
+      const status = emp.is_active ? "active" : "inactive";
+
       return (
-        emp.name?.toLowerCase().includes(text) ||
-        emp.email?.toLowerCase().includes(text) ||
-        emp.department?.toLowerCase().includes(text) ||
-        emp.title?.toLowerCase().includes(text)
+        name.includes(text) ||
+        email.includes(text) ||
+        department.includes(text) ||
+        title.includes(text) ||
+        status.includes(text)
       );
     });
   }, [employees, search]);
@@ -73,128 +83,128 @@ const fetchMeta = async () => {
 
 
   const refreshSelectedEmployee = async (userId) => {
-  const res = await api.get(`/users/${userId}`);
-  setEmployeeDetails(res.data);
+    const res = await api.get(`/users/${userId}`);
+    setEmployeeDetails(res.data);
 
-  setEditName(res.data.name || "");
-  setEditEmail(res.data.email || "");
-  setEditDepartmentId(res.data.department_id || "");
-  setEditRoleId(res.data.role_id || "");
-};
+    setEditName(res.data.name || "");
+    setEditEmail(res.data.email || "");
+    setEditDepartmentId(res.data.department_id || "");
+    setEditRoleId(res.data.role_id || "");
+  };
 
   const handleSelectEmployee = async (employee) => {
-  setSelectedEmployee(employee);
-  setDetailsLoading(true);
-  setNotificationTitle("");
-  setNotificationMessage("");
-  setNotificationSuccess("");
-  setNotificationError("");
-  setEmployeeActionMessage("");
-  setEmployeeActionError("");
-
-  try {
-    await refreshSelectedEmployee(employee.id);
-  } catch (err) {
-    console.error("Failed to load employee details", err);
-    setEmployeeDetails(null);
-  } finally {
-    setDetailsLoading(false);
-  }
-};
-
-
-
-
-
-
-
-const handleUpdateEmployee = async () => {
-  if (!selectedEmployee) return;
-
-  try {
-    setSavingEmployee(true);
-    setEmployeeActionError("");
+    setSelectedEmployee(employee);
+    setDetailsLoading(true);
+    setNotificationTitle("");
+    setNotificationMessage("");
+    setNotificationSuccess("");
+    setNotificationError("");
     setEmployeeActionMessage("");
-
-    await api.put(`/users/${selectedEmployee.id}`, {
-      name: editName.trim(),
-      email: editEmail.trim(),
-      department_id: editDepartmentId ? Number(editDepartmentId) : null,
-      role_id: editRoleId ? Number(editRoleId) : null,
-      is_active: employeeDetails?.is_active,
-    });
-
-    await fetchEmployees();
-    await refreshSelectedEmployee(selectedEmployee.id);
-
-    setEmployeeActionMessage("Employee updated successfully.");
-  } catch (err) {
-    console.error("Failed to update employee", err);
-    setEmployeeActionError(
-      err.response?.data?.detail || "Failed to update employee."
-    );
-  } finally {
-    setSavingEmployee(false);
-  }
-};
-
-const handleToggleEmployeeStatus = async () => {
-  if (!selectedEmployee || !employeeDetails) return;
-
-  try {
     setEmployeeActionError("");
-    setEmployeeActionMessage("");
 
-    await api.patch(`/users/${selectedEmployee.id}/status`, {
-      is_active: !employeeDetails.is_active,
-    });
+    try {
+      await refreshSelectedEmployee(employee.id);
+    } catch (err) {
+      console.error("Failed to load employee details", err);
+      setEmployeeDetails(null);
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
 
-    await fetchEmployees();
-    await refreshSelectedEmployee(selectedEmployee.id);
 
-    setEmployeeActionMessage(
-      !employeeDetails.is_active
-        ? "Employee activated successfully."
-        : "Employee deactivated successfully."
+
+
+
+
+
+  const handleUpdateEmployee = async () => {
+    if (!selectedEmployee) return;
+
+    try {
+      setSavingEmployee(true);
+      setEmployeeActionError("");
+      setEmployeeActionMessage("");
+
+      await api.put(`/users/${selectedEmployee.id}`, {
+        name: editName.trim(),
+        email: editEmail.trim(),
+        department_id: editDepartmentId ? Number(editDepartmentId) : null,
+        role_id: editRoleId ? Number(editRoleId) : null,
+        is_active: employeeDetails?.is_active,
+      });
+
+      await fetchEmployees();
+      await refreshSelectedEmployee(selectedEmployee.id);
+
+      setEmployeeActionMessage("Employee updated successfully.");
+    } catch (err) {
+      console.error("Failed to update employee", err);
+      setEmployeeActionError(
+        err.response?.data?.detail || "Failed to update employee."
+      );
+    } finally {
+      setSavingEmployee(false);
+    }
+  };
+
+  const handleToggleEmployeeStatus = async () => {
+    if (!selectedEmployee || !employeeDetails) return;
+
+    try {
+      setEmployeeActionError("");
+      setEmployeeActionMessage("");
+
+      await api.patch(`/users/${selectedEmployee.id}/status`, {
+        is_active: !employeeDetails.is_active,
+      });
+
+      await fetchEmployees();
+      await refreshSelectedEmployee(selectedEmployee.id);
+
+      setEmployeeActionMessage(
+        !employeeDetails.is_active
+          ? "Employee activated successfully."
+          : "Employee deactivated successfully."
+      );
+    } catch (err) {
+      console.error("Failed to update employee status", err);
+      setEmployeeActionError(
+        err.response?.data?.detail || "Failed to update employee status."
+      );
+    }
+  };
+
+  const handleDeleteEmployee = async () => {
+    if (!selectedEmployee) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${selectedEmployee.name}?`
     );
-  } catch (err) {
-    console.error("Failed to update employee status", err);
-    setEmployeeActionError(
-      err.response?.data?.detail || "Failed to update employee status."
-    );
-  }
-};
+    if (!confirmed) return;
 
-const handleDeleteEmployee = async () => {
-  if (!selectedEmployee) return;
+    try {
+      setEmployeeActionError("");
+      setEmployeeActionMessage("");
 
-  const confirmed = window.confirm(
-    `Are you sure you want to delete ${selectedEmployee.name}?`
-  );
-  if (!confirmed) return;
+      await api.delete(`/users/${selectedEmployee.id}`);
+      await fetchEmployees();
 
-  try {
-    setEmployeeActionError("");
-    setEmployeeActionMessage("");
+      setSelectedEmployee(null);
+      setEmployeeDetails(null);
+      setEditName("");
+      setEditEmail("");
+      setEditDepartmentId("");
+      setEditRoleId("");
 
-    await api.delete(`/users/${selectedEmployee.id}`);
-    await fetchEmployees();
-
-    setSelectedEmployee(null);
-    setEmployeeDetails(null);
-    setEditName("");
-    setEditEmail("");
-    setEditDepartmentId("");
-    setEditRoleId("");
-
-    setEmployeeActionMessage("Employee deleted successfully.");
-  } catch (err) {
-    console.error("Failed to delete employee", err);
-    setEmployeeActionError(
-      err.response?.data?.detail || "Failed to delete employee."
-    );
-  }
-};
+      setEmployeeActionMessage("Employee deleted successfully.");
+    } catch (err) {
+      console.error("Failed to delete employee", err);
+      setEmployeeActionError(
+        err.response?.data?.detail || "Failed to delete employee."
+      );
+    }
+  };
 
 
   const handleSendNotification = async () => {
@@ -305,9 +315,8 @@ const handleDeleteEmployee = async () => {
                   <button
                     key={emp.id}
                     onClick={() => handleSelectEmployee(emp)}
-                    className={`w-full text-left px-5 py-4 hover:bg-slate-50 transition ${
-                      selectedEmployee?.id === emp.id ? "bg-purple-50" : ""
-                    }`}
+                    className={`w-full text-left px-5 py-4 hover:bg-slate-50 transition ${selectedEmployee?.id === emp.id ? "bg-purple-50" : ""
+                      }`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
@@ -322,11 +331,10 @@ const handleDeleteEmployee = async () => {
                             {emp.department || "No department"}
                           </span>
                           <span
-                            className={`text-xs px-2 py-1 rounded-full ${
-                              emp.is_active
+                            className={`text-xs px-2 py-1 rounded-full ${emp.is_active
                                 ? "bg-green-100 text-green-700"
                                 : "bg-red-100 text-red-700"
-                            }`}
+                              }`}
                           >
                             {emp.is_active ? "Active" : "Inactive"}
                           </span>
@@ -404,87 +412,86 @@ const handleDeleteEmployee = async () => {
 
 
 
-<div className="mb-6 border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
-  <h4 className="font-semibold text-slate-800">Edit Employee</h4>
+                <div className="mb-6 border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+                  <h4 className="font-semibold text-slate-800">Edit Employee</h4>
 
-  <input
-    type="text"
-    value={editName}
-    onChange={(e) => setEditName(e.target.value)}
-    placeholder="Employee name"
-    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-  />
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="Employee name"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  />
 
-  <input
-    type="email"
-    value={editEmail}
-    onChange={(e) => setEditEmail(e.target.value)}
-    placeholder="Employee email"
-    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-  />
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    placeholder="Employee email"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  />
 
-  <select
-    value={editDepartmentId}
-    onChange={(e) => setEditDepartmentId(e.target.value)}
-    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-  >
-    <option value="">Select department</option>
-    {departments.map((dep) => (
-      <option key={dep.id} value={dep.id}>
-        {dep.name}
-      </option>
-    ))}
-  </select>
+                  <select
+                    value={editDepartmentId}
+                    onChange={(e) => setEditDepartmentId(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  >
+                    <option value="">Select department</option>
+                    {departments.map((dep) => (
+                      <option key={dep.id} value={dep.id}>
+                        {dep.name}
+                      </option>
+                    ))}
+                  </select>
 
-  <select
-    value={editRoleId}
-    onChange={(e) => setEditRoleId(e.target.value)}
-    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-  >
-    <option value="">Select role</option>
-    {roles.map((role) => (
-      <option key={role.id} value={role.id}>
-        {role.title}
-      </option>
-    ))}
-  </select>
+                  <select
+                    value={editRoleId}
+                    onChange={(e) => setEditRoleId(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  >
+                    <option value="">Select role</option>
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.title}
+                      </option>
+                    ))}
+                  </select>
 
-  {employeeActionMessage && (
-    <div className="text-sm text-green-600">{employeeActionMessage}</div>
-  )}
+                  {employeeActionMessage && (
+                    <div className="text-sm text-green-600">{employeeActionMessage}</div>
+                  )}
 
-  {employeeActionError && (
-    <div className="text-sm text-red-600">{employeeActionError}</div>
-  )}
+                  {employeeActionError && (
+                    <div className="text-sm text-red-600">{employeeActionError}</div>
+                  )}
 
-  <div className="flex flex-wrap gap-3">
-    <button
-      onClick={handleUpdateEmployee}
-      disabled={savingEmployee}
-      className="px-4 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-60 text-white font-medium transition"
-    >
-      {savingEmployee ? "Saving..." : "Save Changes"}
-    </button>
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      onClick={handleUpdateEmployee}
+                      disabled={savingEmployee}
+                      className="px-4 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-60 text-white font-medium transition"
+                    >
+                      {savingEmployee ? "Saving..." : "Save Changes"}
+                    </button>
 
-    <button
-      onClick={handleToggleEmployeeStatus}
-      className={`px-4 py-2.5 rounded-lg text-white font-medium transition ${
-        employeeDetails.is_active
-          ? "bg-amber-600 hover:bg-amber-500"
-          : "bg-green-600 hover:bg-green-500"
-      }`}
-    >
-      {employeeDetails.is_active ? "Deactivate" : "Activate"}
-    </button>
+                    <button
+                      onClick={handleToggleEmployeeStatus}
+                      className={`px-4 py-2.5 rounded-lg text-white font-medium transition ${employeeDetails.is_active
+                          ? "bg-amber-600 hover:bg-amber-500"
+                          : "bg-green-600 hover:bg-green-500"
+                        }`}
+                    >
+                      {employeeDetails.is_active ? "Deactivate" : "Activate"}
+                    </button>
 
-    <button
-      onClick={handleDeleteEmployee}
-      className="px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition"
-    >
-      Delete Employee
-    </button>
-  </div>
-</div>
+                    <button
+                      onClick={handleDeleteEmployee}
+                      className="px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition"
+                    >
+                      Delete Employee
+                    </button>
+                  </div>
+                </div>
 
 
 
@@ -503,11 +510,10 @@ const handleDeleteEmployee = async () => {
                           <div className="flex items-center justify-between">
                             <p className="font-medium text-slate-800">{skill.name}</p>
                             <span
-                              className={`text-xs px-2 py-1 rounded-full ${
-                                skill.status === "completed"
+                              className={`text-xs px-2 py-1 rounded-full ${skill.status === "completed"
                                   ? "bg-green-100 text-green-700"
                                   : "bg-yellow-100 text-yellow-700"
-                              }`}
+                                }`}
                             >
                               {skill.status}
                             </span>

@@ -19,7 +19,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        
+
         <Route path="/" element={<Login />} />
         <Route path="/request-access" element={<CompanyRequest />} />
         <Route path="/admin" element={<AdminDashboard />} />
@@ -30,8 +30,8 @@ function App() {
         <Route path="/hre" element={<HRLayout />}></Route>
         <Route path="/hr/skills" element={<LearningPathsPage />} />
         <Route path="/hr/hierarchy" element={<Hierarchy />} />
-        <Route path="/employee/achievements" element={<TeamAchievements/>}/>
-        
+        <Route path="/employee/achievements" element={<TeamAchievements />} />
+
       </Routes>
     </Router>
   );

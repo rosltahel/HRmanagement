@@ -70,8 +70,11 @@ def get_user_achievements(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if current_user.system_role != "HR":
-        raise HTTPException(status_code=403, detail="Only HR can view achievements")
+    if current_user.system_role not in ["HR", "USER"]:
+        raise HTTPException(status_code=403, detail="Not allowed to view achievements")
+
+    if not current_user.company_id:
+        raise HTTPException(status_code=400, detail="User is not linked to a company")
 
     users = (
         db.query(User)
@@ -188,6 +191,7 @@ def get_user_details(
         "department": department.name if department else None,
         "is_active": user.is_active,
         "skills": skills,
+        "created_at": user.created_at,
     }
 
 

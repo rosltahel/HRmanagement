@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import api from"../../services/api";
+import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import {
   LogOut,
@@ -374,7 +374,7 @@ export default function EmployeeDashboard() {
   const [completeSkill, setCompleteSkill] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [catalogSearch, setCatalogSearch] = useState("");
-  const[selectedLearningPath, setSelectedLearningPath] = useState(null);
+  const [selectedLearningPath, setSelectedLearningPath] = useState(null);
 
 
   const [notifications, setNotifications] = useState([]);
@@ -384,75 +384,75 @@ export default function EmployeeDashboard() {
   const userName = localStorage.getItem("userName") || "Employee";
   const userId = localStorage.getItem("userId");
 
-  const handleOpenLearningPath = (path)=> {setSelectedLearningPath(path);};
-  const handleBackToPaths=()=>{setSelectedLearningPath(null);};
+  const handleOpenLearningPath = (path) => { setSelectedLearningPath(path); };
+  const handleBackToPaths = () => { setSelectedLearningPath(null); };
   const refreshDashboardData = async () => {
-  const [skillsRes, catalogRes, learningPathsRes] = await Promise.all([
-    api.get("/skills/my"),
-    api.get("/skills/catalog"),
-    api.get("/learning-paths/my").catch(() => ({ data: [] })),
-  ]);
+    const [skillsRes, catalogRes, learningPathsRes] = await Promise.all([
+      api.get("/skills/my"),
+      api.get("/skills/catalog"),
+      api.get("/learning-paths/my").catch(() => ({ data: [] })),
+    ]);
 
-  setSkills(skillsRes.data || []);
-  setCatalog(catalogRes.data || []);
-  setLearningPaths(learningPathsRes.data || []);
-};
+    setSkills(skillsRes.data || []);
+    setCatalog(catalogRes.data || []);
+    setLearningPaths(learningPathsRes.data || []);
+  };
 
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      await refreshDashboardData();
-    } catch (err) {
-      console.error("Failed to load employee dashboard data", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchData = async () => {
+      try {
+        await refreshDashboardData();
+      } catch (err) {
+        console.error("Failed to load employee dashboard data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
   useEffect(() => {
-  const fetchNotifications = async () => {
-    const storedUserId = localStorage.getItem("userId");
+    const fetchNotifications = async () => {
+      const storedUserId = localStorage.getItem("userId");
 
-    console.log("userId from localStorage:", storedUserId);
+      console.log("userId from localStorage:", storedUserId);
 
-    if (!storedUserId || isNaN(Number(storedUserId))) {
-      console.warn("Invalid or missing userId, skipping notifications fetch.");
-      return;
-    }
+      if (!storedUserId || isNaN(Number(storedUserId))) {
+        console.warn("Invalid or missing userId, skipping notifications fetch.");
+        return;
+      }
 
-    try {
-      setLoadingNotifications(true);
-      const res = await api.get(`/notifications/my/${storedUserId}`);
-      setNotifications(res.data || []);
-    } catch (err) {
-      console.error("Failed to load notifications", err);
-    } finally {
-      setLoadingNotifications(false);
-    }
-  };
+      try {
+        setLoadingNotifications(true);
+        const res = await api.get(`/notifications/my/${storedUserId}`);
+        setNotifications(res.data || []);
+      } catch (err) {
+        console.error("Failed to load notifications", err);
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
 
-  fetchNotifications();
-}, []);
+    fetchNotifications();
+  }, []);
 
   const handleSkillClick = (skill) => setSelectedSkill(skill);
 
   const handleCompleteWithNote = async (skillId, note) => {
-  try {
-    await api.put("/skills/complete-with-note", {
-      skill_id: skillId,
-      note,
-    });
+    try {
+      await api.put("/skills/complete-with-note", {
+        skill_id: skillId,
+        note,
+      });
 
-    await refreshDashboardData();
-    setCompleteSkill(null);
-  } catch (err) {
-    console.error(err);
-  }
-};
+      await refreshDashboardData();
+      setCompleteSkill(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleLearnFromCatalog = async (catalogItem) => {
     const already = skills.find(
@@ -479,95 +479,95 @@ export default function EmployeeDashboard() {
     }
   };
 
-const handleUpdateSkill = async (employeeSkillId, payload) => {
-  try {
-    await api.put(`/skills/${employeeSkillId}`, payload);
-    await refreshDashboardData();
-    setSelectedSkill(null);
-  } catch (err) {
-    console.error("Failed to update skill", err);
-  }
-};
-
-const handleDeleteSkill = async (employeeSkillId) => {
-  const confirmed = window.confirm("Are you sure you want to delete this skill?");
-  if (!confirmed) return;
-
-  try {
-    await api.delete(`/skills/${employeeSkillId}`);
-    await refreshDashboardData();
-    setSelectedSkill(null);
-  } catch (err) {
-    console.error("Failed to delete skill", err);
-  }
-};
-
-const handleMarkAsLearning = async (skill) => {
-  await handleUpdateSkill(skill.id, {
-    status: "learning",
-    progress: 0,
-    completion_note: null,
-  });
-};
-
-const handleMarkAsCompleted = async (skill) => {
-  await handleUpdateSkill(skill.id, {
-    status: "completed",
-    progress: 100,
-  });
-};
-
-
- const handleStartLearningPath = async (path) => {
-  try {
-    const currentSkillIds = new Set(
-      skills.map((s) => s.skill_id || s.id)
-    );
-
-    const missingSkills = (path.skills || []).filter(
-      (skill) => !currentSkillIds.has(skill.id)
-    );
-
-    for (const skill of missingSkills) {
-      await api.post("/skills/self-add", {
-        skill_id: skill.id,
-      });
+  const handleUpdateSkill = async (employeeSkillId, payload) => {
+    try {
+      await api.put(`/skills/${employeeSkillId}`, payload);
+      await refreshDashboardData();
+      setSelectedSkill(null);
+    } catch (err) {
+      console.error("Failed to update skill", err);
     }
+  };
 
-    const [skillsRes, catalogRes, learningPathsRes] = await Promise.all([
-      api.get("/skills/my"),
-      api.get("/skills/catalog"),
-      api.get("/learning-paths/my"),
-    ]);
+  const handleDeleteSkill = async (employeeSkillId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this skill?");
+    if (!confirmed) return;
 
-    setSkills(skillsRes.data || []);
-    setCatalog(catalogRes.data || []);
-    setLearningPaths(learningPathsRes.data || []);
+    try {
+      await api.delete(`/skills/${employeeSkillId}`);
+      await refreshDashboardData();
+      setSelectedSkill(null);
+    } catch (err) {
+      console.error("Failed to delete skill", err);
+    }
+  };
 
-    setActiveTab(TAB.MY_SKILLS);
-    setSelectedLearningPath(null);
-  } catch (err) {
-    console.error("Failed to start learning path", err);
-  }
-};
+  const handleMarkAsLearning = async (skill) => {
+    await handleUpdateSkill(skill.id, {
+      status: "learning",
+      progress: 0,
+      completion_note: null,
+    });
+  };
+
+  const handleMarkAsCompleted = async (skill) => {
+    await handleUpdateSkill(skill.id, {
+      status: "completed",
+      progress: 100,
+    });
+  };
+
+
+  const handleStartLearningPath = async (path) => {
+    try {
+      const currentSkillIds = new Set(
+        skills.map((s) => s.skill_id || s.id)
+      );
+
+      const missingSkills = (path.skills || []).filter(
+        (skill) => !currentSkillIds.has(skill.id)
+      );
+
+      for (const skill of missingSkills) {
+        await api.post("/skills/self-add", {
+          skill_id: skill.id,
+        });
+      }
+
+      const [skillsRes, catalogRes, learningPathsRes] = await Promise.all([
+        api.get("/skills/my"),
+        api.get("/skills/catalog"),
+        api.get("/learning-paths/my"),
+      ]);
+
+      setSkills(skillsRes.data || []);
+      setCatalog(catalogRes.data || []);
+      setLearningPaths(learningPathsRes.data || []);
+
+      setActiveTab(TAB.MY_SKILLS);
+      setSelectedLearningPath(null);
+    } catch (err) {
+      console.error("Failed to start learning path", err);
+    }
+  };
 
 
 
   const handleAddPersonal = async (data) => {
-  try {
-    await api.post("/skills/self-add", {
-      name: data.name,
-      description: data.description,
-      skill_source: "personal",
-    });
+    try {
+      await api.post("/skills/self-add", {
+        name: data.name,
+        description: data.description,
+        skill_source: "personal",
+      });
 
-    await refreshDashboardData();
-    setShowAddModal(false);
-    setActiveTab(TAB.MY_SKILLS);
-  } catch (err) {
-    console.error("Failed to add personal skill", err);
-  }
-};
+      await refreshDashboardData();
+      setShowAddModal(false);
+      setActiveTab(TAB.MY_SKILLS);
+    } catch (err) {
+      console.error("Failed to add personal skill", err);
+    }
+  };
 
   const handleMarkAsRead = async (notificationId) => {
     try {
@@ -585,9 +585,9 @@ const handleMarkAsCompleted = async (skill) => {
 
 
   const pathAlreadyStarted = (path) => {
-  const currentSkillIds = new Set(skills.map((s) => s.skill_id || s.id));
-  return (path.skills || []).every((skill) => currentSkillIds.has(skill.id));
-};
+    const currentSkillIds = new Set(skills.map((s) => s.skill_id || s.id));
+    return (path.skills || []).every((skill) => currentSkillIds.has(skill.id));
+  };
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
@@ -610,7 +610,7 @@ const handleMarkAsCompleted = async (skill) => {
 
   const tabs = [
     { id: TAB.MY_SKILLS, label: "My Skills", icon: <Zap size={14} />, count: skills.length },
-    { id: TAB.LEARNING_PATHS, label: "Paths", icon: <BookOpen size={14} />, count: learningPaths.length,},
+    { id: TAB.LEARNING_PATHS, label: "Paths", icon: <BookOpen size={14} />, count: learningPaths.length, },
     { id: TAB.CATALOG, label: "Catalog", icon: <BookOpen size={14} />, count: catalog.length },
   ];
 
@@ -640,7 +640,7 @@ const handleMarkAsCompleted = async (skill) => {
 
           <div className="relative">
             <button
-            
+
               onClick={() => setShowNotifications((prev) => !prev)}
               className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
             >
@@ -671,9 +671,8 @@ const handleMarkAsCompleted = async (skill) => {
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}
-                        className={`p-4 ${
-                          notification.is_read ? "bg-transparent" : "bg-purple-500/10"
-                        }`}
+                        className={`p-4 ${notification.is_read ? "bg-transparent" : "bg-purple-500/10"
+                          }`}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1">
@@ -776,9 +775,8 @@ const handleMarkAsCompleted = async (skill) => {
         </div>
 
         <div
-          className={`absolute top-0 right-0 h-full w-80 bg-slate-900/95 border-l border-white/10 flex flex-col z-10 transition-transform duration-300 ease-in-out shadow-2xl ${
-            panelOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute top-0 right-0 h-full w-80 bg-slate-900/95 border-l border-white/10 flex flex-col z-10 transition-transform duration-300 ease-in-out shadow-2xl ${panelOpen ? "translate-x-0" : "translate-x-full"
+            }`}
         >
           <div className="flex flex-col flex-1 overflow-hidden">
             <div className="flex-shrink-0 p-4 border-b border-white/10">
@@ -787,17 +785,15 @@ const handleMarkAsCompleted = async (skill) => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all ${
-                      activeTab === tab.id
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all ${activeTab === tab.id
                         ? "bg-purple-600 text-white shadow"
                         : "text-slate-400 hover:text-white"
-                    }`}
+                      }`}
                   >
                     {tab.icon} {tab.label}
                     <span
-                      className={`text-xs px-1.5 py-0.5 rounded-full ${
-                        activeTab === tab.id ? "bg-white/20" : "bg-white/10"
-                      }`}
+                      className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.id ? "bg-white/20" : "bg-white/10"
+                        }`}
                     >
                       {tab.count}
                     </span>
@@ -896,177 +892,174 @@ const handleMarkAsCompleted = async (skill) => {
 
 
 
- {activeTab === TAB.LEARNING_PATHS && (
-  <div className="p-4 space-y-3">
-    {!selectedLearningPath ? (
-      <>
-        <div>
-          <h3 className="text-sm font-semibold text-slate-300 mb-3">
-            Assigned Learning Paths
-          </h3>
-        </div>
-
-        {learningPaths.length === 0 ? (
-          <div className="text-center py-10 text-slate-500">
-            <div className="text-3xl mb-2">🛤️</div>
-            <p className="text-sm">No learning paths assigned yet.</p>
-            <p className="text-xs mt-1">
-              When HR assigns a path, it will appear here.
-            </p>
-          </div>
-        ) : (
-          learningPaths.map((path) => {
-            const completedCount =
-              path.skills?.filter((skill) => skill.status === "completed").length || 0;
-
-            const alreadyStarted = pathAlreadyStarted(path);
-
-            return (
-              <div
-                key={path.id}
-                onClick={() => handleOpenLearningPath(path)}
-                className="p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/8 transition-colors cursor-pointer"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white font-semibold">{path.title}</p>
-                    {path.description && (
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">
-                        {path.description}
-                      </p>
-                    )}
-                  </div>
-
-                  <ChevronRight
-                    size={14}
-                    className="text-slate-500 flex-shrink-0 mt-0.5"
-                  />
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="text-[11px] px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
-                    {path.skills?.length || 0} skills
-                  </span>
-                  <span className="text-[11px] px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-300">
-                    {completedCount} completed
-                  </span>
-                </div>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStartLearningPath(path);
-                  }}
-                  disabled={alreadyStarted}
-                  className={`mt-3 w-full py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
-                    alreadyStarted
-                      ? "bg-green-500/10 text-green-400 cursor-not-allowed border border-green-500/20"
-                      : "bg-purple-600/80 hover:bg-purple-500 text-white"
-                  }`}
-                >
-                  {alreadyStarted ? (
+              {activeTab === TAB.LEARNING_PATHS && (
+                <div className="p-4 space-y-3">
+                  {!selectedLearningPath ? (
                     <>
-                      <CheckCircle size={12} /> Already Learning
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-300 mb-3">
+                          Assigned Learning Paths
+                        </h3>
+                      </div>
+
+                      {learningPaths.length === 0 ? (
+                        <div className="text-center py-10 text-slate-500">
+                          <div className="text-3xl mb-2">🛤️</div>
+                          <p className="text-sm">No learning paths assigned yet.</p>
+                          <p className="text-xs mt-1">
+                            When HR assigns a path, it will appear here.
+                          </p>
+                        </div>
+                      ) : (
+                        learningPaths.map((path) => {
+                          const completedCount =
+                            path.skills?.filter((skill) => skill.status === "completed").length || 0;
+
+                          const alreadyStarted = pathAlreadyStarted(path);
+
+                          return (
+                            <div
+                              key={path.id}
+                              onClick={() => handleOpenLearningPath(path)}
+                              className="p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/8 transition-colors cursor-pointer"
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm text-white font-semibold">{path.title}</p>
+                                  {path.description && (
+                                    <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">
+                                      {path.description}
+                                    </p>
+                                  )}
+                                </div>
+
+                                <ChevronRight
+                                  size={14}
+                                  className="text-slate-500 flex-shrink-0 mt-0.5"
+                                />
+                              </div>
+
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                <span className="text-[11px] px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
+                                  {path.skills?.length || 0} skills
+                                </span>
+                                <span className="text-[11px] px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-300">
+                                  {completedCount} completed
+                                </span>
+                              </div>
+
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleStartLearningPath(path);
+                                }}
+                                disabled={alreadyStarted}
+                                className={`mt-3 w-full py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${alreadyStarted
+                                    ? "bg-green-500/10 text-green-400 cursor-not-allowed border border-green-500/20"
+                                    : "bg-purple-600/80 hover:bg-purple-500 text-white"
+                                  }`}
+                              >
+                                {alreadyStarted ? (
+                                  <>
+                                    <CheckCircle size={12} /> Already Learning
+                                  </>
+                                ) : (
+                                  <>
+                                    <Rocket size={12} /> Start Learning
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          );
+                        })
+                      )}
                     </>
                   ) : (
-                    <>
-                      <Rocket size={12} /> Start Learning
-                    </>
-                  )}
-                </button>
-              </div>
-            );
-          })
-        )}
-      </>
-    ) : (
-      <div className="space-y-3">
-        <button
-          onClick={handleBackToPaths}
-          className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
-        >
-          ← Back to Paths
-        </button>
+                    <div className="space-y-3">
+                      <button
+                        onClick={handleBackToPaths}
+                        className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                      >
+                        ← Back to Paths
+                      </button>
 
-        <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <p className="text-base text-white font-semibold">
-                {selectedLearningPath.title}
-              </p>
-              {selectedLearningPath.description && (
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  {selectedLearningPath.description}
-                </p>
-              )}
-            </div>
+                      <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-base text-white font-semibold">
+                              {selectedLearningPath.title}
+                            </p>
+                            {selectedLearningPath.description && (
+                              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                                {selectedLearningPath.description}
+                              </p>
+                            )}
+                          </div>
 
-            <span className="text-[11px] px-2 py-1 rounded-full bg-purple-500/20 text-purple-300 whitespace-nowrap">
-              {selectedLearningPath.skills?.length || 0} skills
-            </span>
-          </div>
-        </div>
+                          <span className="text-[11px] px-2 py-1 rounded-full bg-purple-500/20 text-purple-300 whitespace-nowrap">
+                            {selectedLearningPath.skills?.length || 0} skills
+                          </span>
+                        </div>
+                      </div>
 
-        <button
-          onClick={() => handleStartLearningPath(selectedLearningPath)}
-          disabled={pathAlreadyStarted(selectedLearningPath)}
-          className={`w-full py-2 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-            pathAlreadyStarted(selectedLearningPath)
-              ? "bg-green-500/10 text-green-400 cursor-not-allowed border border-green-500/20"
-              : "bg-purple-600 hover:bg-purple-500 text-white"
-          }`}
-        >
-          {pathAlreadyStarted(selectedLearningPath) ? (
-            <>
-              <CheckCircle size={14} /> Already Learning
-            </>
-          ) : (
-            <>
-              <Rocket size={14} /> Start Learning
-            </>
-          )}
-        </button>
+                      <button
+                        onClick={() => handleStartLearningPath(selectedLearningPath)}
+                        disabled={pathAlreadyStarted(selectedLearningPath)}
+                        className={`w-full py-2 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${pathAlreadyStarted(selectedLearningPath)
+                            ? "bg-green-500/10 text-green-400 cursor-not-allowed border border-green-500/20"
+                            : "bg-purple-600 hover:bg-purple-500 text-white"
+                          }`}
+                      >
+                        {pathAlreadyStarted(selectedLearningPath) ? (
+                          <>
+                            <CheckCircle size={14} /> Already Learning
+                          </>
+                        ) : (
+                          <>
+                            <Rocket size={14} /> Start Learning
+                          </>
+                        )}
+                      </button>
 
-        {selectedLearningPath.skills?.length > 0 ? (
-          <div className="space-y-2">
-            {selectedLearningPath.skills.map((skill) => (
-              <div
-                key={`${selectedLearningPath.id}-${skill.id}-${skill.sort_order}`}
-                className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2 border border-white/5"
-              >
-                <div className="min-w-0">
-                  <p className="text-sm text-white truncate">
-                    {skill.sort_order ? `${skill.sort_order}. ` : ""}
-                    {skill.name}
-                  </p>
-                  {skill.description && (
-                    <p className="text-[11px] text-slate-500 mt-0.5 truncate">
-                      {skill.description}
-                    </p>
+                      {selectedLearningPath.skills?.length > 0 ? (
+                        <div className="space-y-2">
+                          {selectedLearningPath.skills.map((skill) => (
+                            <div
+                              key={`${selectedLearningPath.id}-${skill.id}-${skill.sort_order}`}
+                              className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2 border border-white/5"
+                            >
+                              <div className="min-w-0">
+                                <p className="text-sm text-white truncate">
+                                  {skill.sort_order ? `${skill.sort_order}. ` : ""}
+                                  {skill.name}
+                                </p>
+                                {skill.description && (
+                                  <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+                                    {skill.description}
+                                  </p>
+                                )}
+                              </div>
+
+                              <span
+                                className={`text-[11px] px-2 py-0.5 rounded-full ${skill.status === "completed"
+                                    ? "bg-yellow-500/20 text-yellow-300"
+                                    : "bg-purple-500/20 text-purple-300"
+                                  }`}
+                              >
+                                {skill.status === "completed" ? "Done" : "Learning"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 text-slate-500">
+                          <p className="text-sm">No skills found in this path yet.</p>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
-
-                <span
-                  className={`text-[11px] px-2 py-0.5 rounded-full ${
-                    skill.status === "completed"
-                      ? "bg-yellow-500/20 text-yellow-300"
-                      : "bg-purple-500/20 text-purple-300"
-                  }`}
-                >
-                  {skill.status === "completed" ? "Done" : "Learning"}
-                </span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 text-slate-500">
-            <p className="text-sm">No skills found in this path yet.</p>
-          </div>
-        )}
-      </div>
-    )}
-  </div>
-)}
+              )}
 
 
 
@@ -1120,11 +1113,10 @@ const handleMarkAsCompleted = async (skill) => {
                           <button
                             onClick={() => handleLearnFromCatalog(item)}
                             disabled={alreadyLearning}
-                            className={`mt-2 w-full py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
-                              alreadyLearning
+                            className={`mt-2 w-full py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${alreadyLearning
                                 ? "bg-green-500/10 text-green-400 cursor-not-allowed border border-green-500/20"
                                 : "bg-purple-600/80 hover:bg-purple-500 text-white"
-                            }`}
+                              }`}
                           >
                             {alreadyLearning ? (
                               <>
@@ -1165,18 +1157,18 @@ const handleMarkAsCompleted = async (skill) => {
       </div>
 
       {selectedSkill && (
-  <SkillDetailModal
-    skill={selectedSkill}
-    onClose={() => setSelectedSkill(null)}
-    onCompleteRequest={(skill) => {
-      setSelectedSkill(null);
-      setCompleteSkill(skill);
-    }}
-    onDelete={handleDeleteSkill}
-    onMarkLearning={handleMarkAsLearning}
-    onMarkCompleted={handleMarkAsCompleted}
-  />
-)}
+        <SkillDetailModal
+          skill={selectedSkill}
+          onClose={() => setSelectedSkill(null)}
+          onCompleteRequest={(skill) => {
+            setSelectedSkill(null);
+            setCompleteSkill(skill);
+          }}
+          onDelete={handleDeleteSkill}
+          onMarkLearning={handleMarkAsLearning}
+          onMarkCompleted={handleMarkAsCompleted}
+        />
+      )}
 
       {completeSkill && (
         <CompleteModal

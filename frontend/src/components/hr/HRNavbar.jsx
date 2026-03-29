@@ -28,7 +28,7 @@ export default function HRNavbar() {
     { to: "/hr/employees", label: "Team Members", icon: Users },
     { to: "/hr/skills", label: "Learning Paths", icon: Star },
     { to: "/hr/hierarchy", label: "Org Chart", icon: GitBranch },
-   // { to: "/hr/reports", label: "Reports", icon: BarChart3 },
+    // { to: "/hr/reports", label: "Reports", icon: BarChart3 },
   ];
 
   return (
@@ -45,10 +45,9 @@ export default function HRNavbar() {
             to={to}
             end={end}
             className={({ isActive }) =>
-              `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-purple-600 text-white"
-                  : "text-slate-300 hover:bg-slate-700 hover:text-white"
+              `w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive
+                ? "bg-purple-600 text-white"
+                : "text-slate-300 hover:bg-slate-700 hover:text-white"
               }`
             }
           >

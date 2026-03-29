@@ -180,6 +180,7 @@ export default function TeamAchievements() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const userName = localStorage.getItem("userName");
 
   useEffect(() => {
     api
@@ -214,7 +215,7 @@ export default function TeamAchievements() {
       <header className="sticky top-0 z-20 bg-slate-950/90 backdrop-blur-md border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
           <button
-            onClick={() => navigate("/employee-dashboard")}
+            onClick={() => navigate(`/employee-profile/${encodeURIComponent(userName || "")}`)}
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium group"
           >
             <ArrowLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
